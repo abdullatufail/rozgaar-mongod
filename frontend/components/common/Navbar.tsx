@@ -117,12 +117,13 @@ export function Navbar({ selectedCategory, selectedPriceRange, onSearch }: Navba
               <span className="text-black">*</span>
               <span className="ml-1">rozgaar</span>
             </span>
-          </Link>
-          <div className="mt-3">
+          </Link>        <div className="mt-3">
           <SearchBar 
             className="w-[18rem] md:w-[40rem] max-w-2xl mx-auto" 
             defaultQuery={searchQuery}
             onSearch={handleSearch}
+            selectedCategory={selectedCategory}
+            selectedPriceRange={selectedPriceRange}
           />
         </div>
         <div className="flex items-center gap-4">

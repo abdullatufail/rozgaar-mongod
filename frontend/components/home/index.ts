@@ -1,5 +1,6 @@
 export { Header } from './Header'
 export { HeroSection } from './HeroSection'
+export { HeroSearchBar } from './HeroSearchBar'
 export { ClientPreferenceSection } from './ClientPreferenceSection'
 export { CategorySection } from './CategorySection'
 export { GigExploreSection } from './GigExploreSection'

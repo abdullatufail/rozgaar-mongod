@@ -2,27 +2,10 @@
 
 import { motion } from "framer-motion"
 import { Info } from "lucide-react"
-import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { SearchBar } from "../common/SearchBar"
 import { FadeInWhenVisible } from "../animations/fade-in-when-visible"
+import { HeroSearchBar } from "./HeroSearchBar"
 
 export function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const router = useRouter()
-  const searchParams = useSearchParams()
-
-  const updateSearchParams = () => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    if (searchQuery) {
-      params.set("search", searchQuery.trim())
-    } else {
-      params.delete("search")
-    }
-
-    router.push(`/search/gigs?${params.toString()}`)
-  }
 
   return (
     <section className="container mx-auto px-8 md:px-4 py-16 md:py-28 overflow-hidden">
@@ -79,9 +62,7 @@ export function HeroSection() {
               <Info className="h-5 w-5 text-gray-500 mr-2" />
             </motion.div>
           </div>
-        </FadeInWhenVisible>
-
-        <motion.div
+        </FadeInWhenVisible>        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
@@ -92,15 +73,7 @@ export function HeroSection() {
           }}
         >
           <div className="flex justify-center mb-8">
-            <SearchBar
-              className="w-full max-w-xl mx-auto"
-              defaultQuery={searchQuery}
-              onSearch={(query) => {
-                setSearchQuery(query)
-                // Remove the setTimeout to improve performance
-                updateSearchParams()
-              }}
-            />
+            <HeroSearchBar className="w-full max-w-xl mx-auto" />
           </div>
         </motion.div>
       </div>
