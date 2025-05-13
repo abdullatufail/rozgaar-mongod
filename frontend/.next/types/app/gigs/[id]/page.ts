@@ -1,4 +1,4 @@
-// File: E:\rozgaarv0\frontend\app\gigs\[id]\page.tsx
+// File: E:\rozgaar-mongodb\frontend\app\gigs\[id]\page.tsx
 import * as entry from '../../../../../app/gigs/[id]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

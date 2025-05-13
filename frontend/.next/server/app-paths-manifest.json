@@ -1,8 +1,6 @@
 {
-  "/gigs/[id]/page": "app/gigs/[id]/page.js",
-  "/freelancerGigs/page": "app/freelancerGigs/page.js",
-  "/freelancerGigs/[id]/edit/page": "app/freelancerGigs/[id]/edit/page.js",
   "/page": "app/page.js",
-  "/about/page": "app/about/page.js",
-  "/(freelancer)/dashboard/page": "app/(freelancer)/dashboard/page.js"
+  "/gigs/[id]/page": "app/gigs/[id]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/search/gigs/page": "app/search/gigs/page.js"
 }

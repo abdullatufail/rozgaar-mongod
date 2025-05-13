@@ -1,0 +1,6 @@
+export { Header } from './Header'
+export { HeroSection } from './HeroSection'
+export { ClientPreferenceSection } from './ClientPreferenceSection'
+export { CategorySection } from './CategorySection'
+export { GigExploreSection } from './GigExploreSection'
+export { StartTodaySection } from './StartTodaySection'
