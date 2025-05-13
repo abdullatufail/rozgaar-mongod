@@ -1,0 +1,8 @@
+{
+  "/gigs/[id]/page": "app/gigs/[id]/page.js",
+  "/freelancerGigs/page": "app/freelancerGigs/page.js",
+  "/freelancerGigs/[id]/edit/page": "app/freelancerGigs/[id]/edit/page.js",
+  "/page": "app/page.js",
+  "/about/page": "app/about/page.js",
+  "/(freelancer)/dashboard/page": "app/(freelancer)/dashboard/page.js"
+}
