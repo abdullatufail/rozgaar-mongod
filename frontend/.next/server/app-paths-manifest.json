@@ -4,5 +4,6 @@
   "/orders/[orderId]/page": "app/orders/[orderId]/page.js",
   "/search/gigs/page": "app/search/gigs/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/gigs/[id]/page": "app/gigs/[id]/page.js",
   "/(freelancer)/dashboard/page": "app/(freelancer)/dashboard/page.js"
 }

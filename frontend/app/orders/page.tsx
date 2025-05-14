@@ -21,19 +21,28 @@ import { ScrollProgressIndicator } from "@/components/animations/scroll-progress
 import { TextReveal } from "@/components/animations/text-reveal"
 
 export default function OrdersPage() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
   const [orders, setOrders] = useState<orderService.Order[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) {
+    // Only redirect if we're definitely not authenticated (user is null AND loading is false)
+    if (!user && !authLoading) {
+      // Save the current URL to localStorage before redirecting
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('returnUrl', window.location.pathname)
+      }
       router.push("/login")
       return
     }
-    loadOrders()
-  }, [user])
+    
+    // Only fetch data if we're authenticated
+    if (user) {
+      loadOrders()
+    }
+  }, [user, authLoading])
 
   const loadOrders = async () => {
     try {

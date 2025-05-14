@@ -87,12 +87,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     fetchUser();
   }, []);
-
   const login = async (email: string, password: string) => {
     try {
       const { user } = await authService.login(email, password);
       setUser(user);
-      router.push("/dashboard");
+      
+      // Get the return URL from localStorage if it exists (user was trying to access a specific page)
+      const returnUrl = localStorage.getItem('returnUrl');
+      
+      if (returnUrl) {
+        // Clear the returnUrl from localStorage after using it
+        localStorage.removeItem('returnUrl');
+        router.push(returnUrl);
+      } else {
+        // Default redirect to dashboard if no return URL
+        router.push("/dashboard");
+      }
+      
       toast({
         title: "Success",
         description: "You have been logged in successfully.",
@@ -107,7 +118,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
-
   const register = async (
     name: string,
     email: string,
@@ -122,7 +132,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role
       );
       setUser(user);
-      router.push("/dashboard");
+      
+      // Get the return URL from localStorage if it exists
+      const returnUrl = localStorage.getItem('returnUrl');
+      
+      if (returnUrl) {
+        // Clear the returnUrl from localStorage after using it
+        localStorage.removeItem('returnUrl');
+        router.push(returnUrl);
+      } else {
+        // Default redirect to dashboard if no return URL
+        router.push("/dashboard");
+      }
+      
       toast({
         title: "Success",
         description: "Your account has been created successfully.",

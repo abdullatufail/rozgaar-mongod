@@ -276,11 +276,11 @@ const Spinner = () => (
 export default function OrderPage() {
   const { orderId } = useParams()
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const { toast } = useToast()
 
   const [order, setOrder] = useState<Order | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [orderLoading, setOrderLoading] = useState(true)
   const [file, setFile] = useState<File | null>(null)
   const [notes, setNotes] = useState("")
   const [reason, setReason] = useState("")
@@ -304,12 +304,21 @@ export default function OrderPage() {
   }
 
   useEffect(() => {
-    if (!user) {
+    // Only redirect if we're definitely not authenticated (user is null AND loading is false)
+    if (!user && !loading) {
+      // Save the current URL to localStorage before redirecting
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('returnUrl', window.location.pathname)
+      }
       router.push("/login")
       return
     }
-    fetchOrder()
-  }, [user, orderId, router])
+    
+    // Only fetch data if we're authenticated
+    if (user) {
+      fetchOrder()
+    }
+  }, [user, loading, orderId, router])
 
   const fetchOrder = async () => {
     try {
@@ -324,7 +333,7 @@ export default function OrderPage() {
         variant: "destructive",
       })
     } finally {
-      setLoading(false)
+      setOrderLoading(false)
     }
   }
 
@@ -591,7 +600,7 @@ export default function OrderPage() {
       .join(" ")
   }
 
-  if (loading) {
+  if (orderLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <motion.div
