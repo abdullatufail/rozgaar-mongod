@@ -23,9 +23,7 @@ import { FadeInWhenVisible } from "@/components/animations/fade-in-when-visible"
 import { StaggeredChildren, StaggeredChild } from "@/components/animations/staggered-container"
 import { MagneticButton } from "@/components/animations/magnetic-button"
 import { ScrollProgressIndicator } from "@/components/animations/scroll-progress-indicator"
-
-// Available categories
-const CATEGORIES = ["Web Development", "Mobile Development", "Graphic Design", "Content Writing", "Digital Marketing"]
+import { CATEGORIES } from "@/lib/constants"
 
 // Price range options
 const PRICE_RANGES = [
@@ -204,11 +202,11 @@ export default function GigsSearch() {
               <DropdownMenuContent>
                 {CATEGORIES.map((category) => (
                   <DropdownMenuItem
-                    key={category}
-                    onClick={() => handleCategorySelect(category)}
-                    className={selectedCategory === category ? "bg-gray-100" : ""}
+                    key={category.name}
+                    onClick={() => handleCategorySelect(category.name)}
+                    className={selectedCategory === category.name ? "bg-gray-100" : ""}
                   >
-                    {category}
+                    {category.name}
                   </DropdownMenuItem>
                 ))}
                 {selectedCategory && (
