@@ -10,69 +10,23 @@ interface SearchBarProps {
   onSearch?: (query: string) => void;
   className?: string;
   defaultQuery?: string;
-  selectedCategory?: string | null;
-  selectedPriceRange?: { min: number; max: number; label?: string } | null;
 }
 
-export function SearchBar({ 
-  onSearch, 
-  className, 
-  defaultQuery = "", 
-  selectedCategory = null,
-  selectedPriceRange = null
-}: SearchBarProps) {
+export function SearchBar({ onSearch, className, defaultQuery = "" }: SearchBarProps) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultQuery);
-    const handleSubmit = (e: React.FormEvent) => {
+  
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (onSearch) {
-      // Call onSearch but also perform the default navigation
       onSearch(query);
-      
-      // Direct navigation - more reliable than waiting for state updates
-      const params = new URLSearchParams();
-      if (query) {
-        params.set("search", query.trim());
-      }
-      
-      // Add category filter if provided
-      if (selectedCategory) {
-        params.set("category", selectedCategory);
-      }
-      
-      // Add price range filters if provided
-      if (selectedPriceRange) {
-        if (selectedPriceRange.min > 0) {
-          params.set("minPrice", selectedPriceRange.min.toString());
-        }
-        if (selectedPriceRange.max < 1000) {
-          params.set("maxPrice", selectedPriceRange.max.toString());
-        }
-      }
-      
-      // Use window.location for immediate navigation
-      window.location.href = `/search/gigs?${params.toString()}`;
     } else {
       // Default behavior: navigate to search page
       const params = new URLSearchParams();
       if (query) {
         params.set("search", query.trim());
-      }
-      
-      // Add category filter if provided
-      if (selectedCategory) {
-        params.set("category", selectedCategory);
-      }
-      
-      // Add price range filters if provided
-      if (selectedPriceRange) {
-        if (selectedPriceRange.min > 0) {
-          params.set("minPrice", selectedPriceRange.min.toString());
-        }
-        if (selectedPriceRange.max < 1000) {
-          params.set("maxPrice", selectedPriceRange.max.toString());
-        }
       }
       
       router.push(`/search/gigs?${params.toString()}`);

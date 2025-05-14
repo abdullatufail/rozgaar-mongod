@@ -8,45 +8,20 @@ import { Search } from "lucide-react";
 interface HeroSearchBarProps {
   className?: string;
   defaultQuery?: string;
-  selectedCategory?: string | null;
-  selectedPriceRange?: { min: number; max: number; label?: string } | null;
 }
 
-export function HeroSearchBar({ 
-  className, 
-  defaultQuery = "",
-  selectedCategory = null,
-  selectedPriceRange = null 
-}: HeroSearchBarProps) {
+export function HeroSearchBar({ className, defaultQuery = "" }: HeroSearchBarProps) {
   const [query, setQuery] = useState(defaultQuery);
-    const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create URL params
-    const params = new URLSearchParams();
-    
-    // Add search query if provided
-    if (query) {
-      params.set("search", query.trim());
-    }
-    
-    // Add category filter if provided
-    if (selectedCategory) {
-      params.set("category", selectedCategory);
-    }
-    
-    // Add price range filters if provided
-    if (selectedPriceRange) {
-      if (selectedPriceRange.min > 0) {
-        params.set("minPrice", selectedPriceRange.min.toString());
-      }
-      if (selectedPriceRange.max < 1000) {
-        params.set("maxPrice", selectedPriceRange.max.toString());
-      }
-    }
-    
     // Direct navigation approach using window.location
-    window.location.href = `/search/gigs?${params.toString()}`;
+    if (query) {
+      window.location.href = `/search/gigs?search=${encodeURIComponent(query.trim())}`;
+    } else {
+      window.location.href = `/search/gigs`;
+    }
   };
 
   return (

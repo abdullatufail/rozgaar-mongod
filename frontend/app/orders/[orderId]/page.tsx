@@ -1251,7 +1251,7 @@ const OrderPage = () => {
                     </MagneticButton>
                   )}
 
-                  {user && isSameId(user.id, order.freelancerId) && order.status === "in_progress" && (
+                  {user?.id === order.freelancerId && order.status === "in_progress" && (
                     <Dialog>
                       <DialogTrigger asChild>
                         <MagneticButton strength={20}>
