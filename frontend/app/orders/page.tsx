@@ -9,7 +9,7 @@ import { useToast } from "../../components/ui/use-toast"
 import { formatDistanceToNow } from "date-fns"
 import { Navbar } from "@/components/common/Navbar"
 import { PageTransition } from "../../components/animations"
-import { Package, Calendar, DollarSign, Clock, ArrowRight } from 'lucide-react'
+import { Package, DollarSign, Clock, ArrowRight } from "lucide-react"
 import Footer from "@/components/common/Footer"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -19,52 +19,21 @@ import { StaggeredChildren, StaggeredChild } from "@/components/animations/stagg
 import { MagneticButton } from "@/components/animations/magnetic-button"
 import { ScrollProgressIndicator } from "@/components/animations/scroll-progress-indicator"
 import { TextReveal } from "@/components/animations/text-reveal"
-import { FloatingElement } from "@/components/animations/floating-element"
 
-// Debug component to show auth state (only visible in development)
-const AuthDebugInfo = ({ user, authLoading }: { user: any; authLoading: boolean }) => {
-  if (process.env.NODE_ENV !== 'development') return null;
-  
-  return (
-    <div className="fixed bottom-4 right-4 p-4 bg-black/80 text-white text-xs rounded shadow-lg max-w-sm z-50 overflow-auto">
-      <h4 className="font-bold mb-2">Auth Debug Info</h4>
-      <div>Loading: {authLoading ? 'Yes' : 'No'}</div>
-      <div>User: {user ? `${user.name} (${user.id})` : 'Not authenticated'}</div>
-      <div>Role: {user?.role || 'None'}</div>
-      <div>Token: {document.cookie.includes('token=') ? 'Present' : 'Missing'}</div>
-      <div className="mt-2 text-xs text-gray-400">Only visible in development mode</div>
-    </div>
-  );
-};
-
-const OrdersPage = () => {
-  const { user, loading: authLoading } = useAuth()
+export default function OrdersPage() {
+  const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
   const [orders, setOrders] = useState<orderService.Order[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log("Orders page - Auth state:", { 
-      user: user?.id ? `User ID: ${user.id}` : "No user", 
-      role: user?.role || "No role",
-      isAuthenticated: !!user,
-      authLoading
-    });
-    
-    // Only redirect if auth loading is complete and there's no user
-    if (!authLoading && !user) {
-      console.log("Orders page - Auth loading complete, no user found, redirecting to login");
-      router.push("/login");
-      return;
+    if (!user) {
+      router.push("/login")
+      return
     }
-    
-    // Only load orders if we have a user and auth loading is complete
-    if (user && !authLoading) {
-      console.log("Orders page - User authenticated, loading orders");
-      loadOrders();
-    }
-  }, [user, authLoading, router]);
+    loadOrders()
+  }, [user])
 
   const loadOrders = async () => {
     try {
@@ -133,12 +102,9 @@ const OrdersPage = () => {
 
   return (
     <PageTransition>
-      {/* Add auth debug display */}
-      <AuthDebugInfo user={user} authLoading={authLoading} />
-      
       {/* Progress bar */}
       <ScrollProgressIndicator />
-      
+
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <FadeInWhenVisible>
@@ -191,13 +157,7 @@ const OrdersPage = () => {
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button onClick={() => router.push("/search/gigs")}>Browse Gigs</Button>
-                  </motion.div>
+                  <Button onClick={() => router.push("/search/gigs")}>Browse Gigs</Button>
                 </motion.div>
               </MagneticButton>
             </motion.div>
@@ -209,8 +169,8 @@ const OrdersPage = () => {
                 <StaggeredChild key={order.id}>
                   <motion.div
                     className="rounded-lg border overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
-                    whileHover={{ 
-                      y: -5, 
+                    whileHover={{
+                      y: -5,
                       boxShadow: "0 10px 30px -15px rgba(0,0,0,0.1)",
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -311,5 +271,3 @@ const OrdersPage = () => {
     </PageTransition>
   )
 }
-
-export default OrdersPage

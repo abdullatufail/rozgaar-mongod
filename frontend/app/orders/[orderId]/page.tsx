@@ -78,7 +78,6 @@ const CountdownTimer = ({ dueDate, orderStatus }: { dueDate: string; orderStatus
     return () => clearInterval(timer)
   }, [dueDate, orderStatus])
 
-
   // For completed orders, show a completion message instead of the timer
   if (orderStatus === "completed") {
     return (
@@ -274,28 +273,12 @@ const Spinner = () => (
   />
 )
 
-// Debug component to show auth state (only visible in development)
-const AuthDebugInfo = ({ user, authLoading }: { user: any; authLoading: boolean }) => {
-  if (process.env.NODE_ENV !== 'development') return null;
-  
-  return (
-    <div className="fixed bottom-4 right-4 p-4 bg-black/80 text-white text-xs rounded shadow-lg max-w-sm z-50 overflow-auto">
-      <h4 className="font-bold mb-2">Auth Debug Info</h4>
-      <div>Loading: {authLoading ? 'Yes' : 'No'}</div>
-      <div>User: {user ? `${user.name} (${user.id})` : 'Not authenticated'}</div>
-      <div>Role: {user?.role || 'None'}</div>
-      <div>Token: {document.cookie.includes('token=') ? 'Present' : 'Missing'}</div>
-      <div className="mt-2 text-xs text-gray-400">Only visible in development mode</div>
-    </div>
-  );
-};
-
-const OrderPage = () => {
+export default function OrderPage() {
   const { orderId } = useParams()
   const router = useRouter()
-  const { user, loading: authLoading } = useAuth()
+  const { user } = useAuth()
   const { toast } = useToast()
-  
+
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [file, setFile] = useState<File | null>(null)
@@ -307,6 +290,8 @@ const OrderPage = () => {
   const [isCancelling, setIsCancelling] = useState(false)
   const [isReviewing, setIsReviewing] = useState(false)
   const [showReviewDialog, setShowReviewDialog] = useState(false)
+  const [showDeliverDialog, setShowDeliverDialog] = useState(false)
+  const [showCancellationDialog, setShowCancellationDialog] = useState(false)
 
   // Scroll animation
   const { scrollYProgress } = useScroll()
@@ -319,27 +304,12 @@ const OrderPage = () => {
   }
 
   useEffect(() => {
-    console.log("Order detail page - Auth state:", { 
-      user: user?.id ? `User ID: ${user.id}` : "No user", 
-      role: user?.role || "No role",
-      isAuthenticated: !!user,
-      orderId: orderId,
-      authLoading
-    });
-    
-    // Only redirect if auth loading is complete and there's no user
-    if (!authLoading && !user) {
-      console.log("Order detail page - Auth loading complete, no user found, redirecting to login");
-      router.push("/login");
-      return;
+    if (!user) {
+      router.push("/login")
+      return
     }
-    
-    // Only fetch order if we have a user and auth loading is complete
-    if (user && !authLoading) {
-      console.log("Order detail page - User authenticated, fetching order");
-      fetchOrder();
-    }
-  }, [user, authLoading, orderId, router]);
+    fetchOrder()
+  }, [user, orderId, router])
 
   const fetchOrder = async () => {
     try {
@@ -359,6 +329,8 @@ const OrderPage = () => {
   }
 
   const handleDeliverOrder = async () => {
+    console.log("Deliver Order clicked with file:", file, "and notes:", notes);
+    
     if (!file) {
       toast({
         title: "Error",
@@ -377,11 +349,15 @@ const OrderPage = () => {
     }
     setIsDelivering(true)
     try {
+      console.log("Attempting to deliver order with ID:", orderId);
       await orderService.orderService.deliverOrder(orderId as string, file, notes)
       toast({
         title: "Success",
         description: "Order delivered successfully",
       })
+      setShowDeliverDialog(false)
+      setFile(null)
+      setNotes("")
       fetchOrder()
     } catch (error: unknown) {
       const apiError = error as ApiError
@@ -437,6 +413,8 @@ const OrderPage = () => {
   }
 
   const handleRequestCancellation = async () => {
+    console.log("Requesting cancellation with reason:", reason);
+    
     if (!reason) {
       toast({
         title: "Error",
@@ -447,11 +425,14 @@ const OrderPage = () => {
     }
     setIsCancelling(true)
     try {
+      console.log("Attempting to request cancellation for order ID:", orderId);
       await orderService.orderService.requestCancellation(orderId as string, reason)
       toast({
         title: "Success",
         description: "Cancellation requested",
       })
+      setShowCancellationDialog(false)
+      setReason("")
       fetchOrder()
     } catch (error: unknown) {
       const apiError = error as ApiError
@@ -648,9 +629,6 @@ const OrderPage = () => {
 
   return (
     <PageTransition>
-      {/* Add auth debug display */}
-      <AuthDebugInfo user={user} authLoading={authLoading} />
-      
       {/* Progress bar */}
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-black z-50 origin-left" style={{ scaleX }} />
 
@@ -751,13 +729,15 @@ const OrderPage = () => {
                       <div className="space-y-3">
                         <div>
                           <p className="text-sm text-gray-500">Gig Title</p>
-                          <p className="font-medium">{order.gig?order.gig.title:"Deleted Gig"}</p>
+                          <p className="font-medium">{order.gig.title}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Price</p>
                           <div className="flex items-center">
                             <motion.div
-                              
+                              animate={{
+                                y: [0, -5, 0],
+                              }}
                               transition={{
                                 duration: 2,
                                 repeat: Number.POSITIVE_INFINITY,
@@ -853,7 +833,9 @@ const OrderPage = () => {
                   >
                     <h3 className="text-lg font-semibold mb-4 border-b pb-2 flex items-center">
                       <motion.div
-                       
+                        animate={{
+                          rotate: [0, 360],
+                        }}
                         transition={{
                           duration: 20,
                           repeat: Number.POSITIVE_INFINITY,
@@ -1188,7 +1170,7 @@ const OrderPage = () => {
 
           {/* Right Column - Actions */}
           <FadeInWhenVisible delay={0.3} className="lg:col-span-1">
-            
+            <FloatingElement amount={5} speed={0.5}>
               <motion.div
                 className="bg-white shadow-md rounded-lg p-6"
                 initial={{ opacity: 0, y: 20 }}
@@ -1251,8 +1233,8 @@ const OrderPage = () => {
                     </MagneticButton>
                   )}
 
-                  {user?.id === order.freelancerId && order.status === "in_progress" && (
-                    <Dialog>
+                  {user && isSameId(user.id, order.freelancerId) && order.status === "in_progress" && (
+                    <Dialog open={showDeliverDialog} onOpenChange={setShowDeliverDialog}>
                       <DialogTrigger asChild>
                         <MagneticButton strength={20}>
                           <motion.div
@@ -1260,7 +1242,7 @@ const OrderPage = () => {
                             whileTap={{ scale: 0.95 }}
                             transition={{ type: "spring", stiffness: 400, damping: 17 }}
                           >
-                            <Button className="w-full">
+                            <Button className="w-full" onClick={() => setShowDeliverDialog(true)}>
                               <Upload className="mr-2 h-4 w-4" />
                               Deliver Work
                             </Button>
@@ -1283,6 +1265,7 @@ const OrderPage = () => {
                               onChange={(e) => {
                                 if (e.target.files) {
                                   setFile(e.target.files[0])
+                                  console.log("File selected:", e.target.files[0].name);
                                 }
                               }}
                             />
@@ -1299,7 +1282,11 @@ const OrderPage = () => {
                             />
                           </div>
                         </div>
-                        <Button onClick={handleDeliverOrder} disabled={isDelivering}>
+                        <Button 
+                          onClick={handleDeliverOrder} 
+                          disabled={isDelivering}
+                          className="w-full"
+                        >
                           {isDelivering ? <Spinner /> : "Deliver"}
                         </Button>
                       </DialogContent>
@@ -1341,7 +1328,7 @@ const OrderPage = () => {
                   {user &&
                     ((isSameId(user.id, order.clientId) && order.status === "in_progress") ||
                       (isSameId(user.id, order.clientId) && order.isLate && order.status === "late")) && (
-                      <Dialog>
+                      <Dialog open={showCancellationDialog} onOpenChange={setShowCancellationDialog}>
                         <DialogTrigger asChild>
                           <MagneticButton strength={20}>
                             <motion.div
@@ -1349,7 +1336,11 @@ const OrderPage = () => {
                               whileTap={{ scale: 0.95 }}
                               transition={{ type: "spring", stiffness: 400, damping: 17 }}
                             >
-                              <Button variant="destructive" className="w-full">
+                              <Button 
+                                variant="destructive" 
+                                className="w-full"
+                                onClick={() => setShowCancellationDialog(true)}
+                              >
                                 Request Cancellation
                               </Button>
                             </motion.div>
@@ -1372,7 +1363,11 @@ const OrderPage = () => {
                               />
                             </div>
                           </div>
-                          <Button onClick={handleRequestCancellation} disabled={isCancelling}>
+                          <Button 
+                            onClick={handleRequestCancellation} 
+                            disabled={isCancelling}
+                            className="w-full"
+                          >
                             {isCancelling ? <Spinner /> : "Request Cancellation"}
                           </Button>
                         </DialogContent>
@@ -1380,7 +1375,7 @@ const OrderPage = () => {
                     )}
                 </motion.div>
               </motion.div>
-            
+            </FloatingElement>
           </FadeInWhenVisible>
         </div>
       </div>
@@ -1430,5 +1425,3 @@ const OrderPage = () => {
     </PageTransition>
   )
 }
-
-export default OrderPage;
