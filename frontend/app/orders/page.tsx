@@ -14,8 +14,6 @@ import Footer from "@/components/common/Footer"
 import { motion, AnimatePresence } from "framer-motion"
 
 // Import advanced animation components
-import { FadeInWhenVisible } from "@/components/animations/fade-in-when-visible"
-import { StaggeredChildren, StaggeredChild } from "@/components/animations/staggered-container"
 import { MagneticButton } from "@/components/animations/magnetic-button"
 import { ScrollProgressIndicator } from "@/components/animations/scroll-progress-indicator"
 import { TextReveal } from "@/components/animations/text-reveal"
@@ -114,29 +112,27 @@ export default function OrdersPage() {
       {/* Progress bar */}
       <ScrollProgressIndicator />
 
-      <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        <FadeInWhenVisible>
-          <div className="mb-8 flex items-center">
+      <Navbar />      <div className="container mx-auto px-4 py-8">
+        <motion.div 
+          className="mb-8 flex items-center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
               <Package className="mr-3 h-7 w-7" />
-            </motion.div>
-            <TextReveal text={<h1 className="text-3xl font-bold">My Orders</h1>} />
-          </div>
-        </FadeInWhenVisible>
-
-        {orders.length === 0 ? (
-          <FadeInWhenVisible delay={0.2}>
-            <motion.div
-              className="flex flex-col items-center justify-center py-16 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            </motion.div>            <TextReveal text={<h1 className="text-3xl font-bold">My Orders</h1>} />
+        </motion.div>        {orders.length === 0 ? (
+          <motion.div
+            className="flex flex-col items-center justify-center py-16 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
               <motion.div
                 className="mb-4 rounded-full bg-gray-100 p-4"
                 whileHover={{ scale: 1.1, rotate: 5 }}
@@ -168,22 +164,23 @@ export default function OrdersPage() {
                 >
                   <Button onClick={() => router.push("/search/gigs")}>Browse Gigs</Button>
                 </motion.div>
-              </MagneticButton>
-            </motion.div>
-          </FadeInWhenVisible>
+              </MagneticButton>            </motion.div>
         ) : (
-          <StaggeredChildren staggerDelay={0.1} containerDelay={0.2} className="grid gap-6">
+          <div className="grid gap-6">
             <AnimatePresence>
-              {orders.map((order, index) => (
-                <StaggeredChild key={order.id}>
-                  <motion.div
-                    className="rounded-lg border overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
-                    whileHover={{
-                      y: -5,
-                      boxShadow: "0 10px 30px -15px rgba(0,0,0,0.1)",
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  >
+              {orders.map((order, index) => (                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  layout
+                  className="rounded-lg border overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0 10px 30px -15px rgba(0,0,0,0.1)",
+                    transition: { type: "spring", stiffness: 300, damping: 15 }
+                  }}
+                >
                     <motion.div
                       className={`px-4 py-2 ${getStatusColor(order.status)}`}
                       initial={{ scaleX: 0 }}
@@ -268,12 +265,10 @@ export default function OrdersPage() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                </StaggeredChild>
+                    </div>                  </motion.div>
               ))}
             </AnimatePresence>
-          </StaggeredChildren>
+          </div>
         )}
       </div>
       <Footer />
