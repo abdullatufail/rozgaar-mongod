@@ -23,18 +23,14 @@ import Image from "next/image"
 import Link from "next/link"
 import { Edit, Plus, Star, Trash2 } from 'lucide-react'
 import { Navbar } from "../../components/common/Navbar"
-import { Spinner } from "../../components/ui/spinner"
 import { PageTransition } from "../../components/animations"
 import { motion, AnimatePresence } from "framer-motion"
 
 // Import advanced animation components
 import { FadeInWhenVisible } from "@/components/animations/fade-in-when-visible"
-import { StaggeredChildren, StaggeredChild } from "@/components/animations/staggered-container"
 import { MagneticButton } from "@/components/animations/magnetic-button"
 import { ScrollProgressIndicator } from "@/components/animations/scroll-progress-indicator"
 import { TextReveal } from "@/components/animations/text-reveal"
-import { FloatingElement } from "@/components/animations/floating-element"
-import { ParallaxSection } from "@/components/animations/parallax-section"
 
 export default function FreelancerGigsPage() {
   const router = useRouter()
@@ -42,7 +38,6 @@ export default function FreelancerGigsPage() {
   const { toast } = useToast()
   const [gigs, setGigs] = useState<Gig[]>([])
   const [loading, setLoading] = useState(true)
-  const [gigToDelete, setGigToDelete] = useState<string | null>(null)
 
   useEffect(() => {
     if (user) {
@@ -116,7 +111,6 @@ export default function FreelancerGigsPage() {
         variant: "destructive",
       })
     }
-    setGigToDelete(null)
   }
 
   if (userLoading) {

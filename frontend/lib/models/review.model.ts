@@ -10,9 +10,8 @@ export interface IReview extends Document {
   order?: any;
 }
 
-const reviewSchema = new Schema<IReview>({
-  orderId: {
-    type: mongoose.Schema.Types.ObjectId,
+const reviewSchema = new Schema<IReview>({  orderId: {
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'Order',
     required: true,
     unique: true
@@ -45,9 +44,8 @@ reviewSchema.post('save', async function() {
   try {
     const Order = mongoose.models.Order || mongoose.model('Order');
     const Gig = mongoose.models.Gig || mongoose.model('Gig');
-    
-    // Get the order to find the gig
-    const order = await Order.findById(this.orderId);
+      // Get the order to find the gig
+    const order = await Order.findById((this as any).orderId);
     if (!order) return;
     
     // Get all reviews for the specific gigId

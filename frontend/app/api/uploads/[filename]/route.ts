@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: { filename: string } }
 ) {
   try {

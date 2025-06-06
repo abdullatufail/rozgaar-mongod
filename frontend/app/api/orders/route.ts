@@ -43,10 +43,9 @@ export async function GET(request: NextRequest) {
           order.status = 'late';
           await order.save();
         }
-      }
-    }
+      }    }
       // Transform the response to match frontend expectations
-    const transformedOrders = orders?.map(order => ({
+    const transformedOrders = orders?.map((order: any) => ({
       ...order.toObject(),
       id: order._id,
       gig: order.gigId, // Map gigId to gig for frontend

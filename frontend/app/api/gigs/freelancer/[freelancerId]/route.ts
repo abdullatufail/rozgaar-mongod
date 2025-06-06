@@ -5,7 +5,7 @@ import User from '@/lib/models/user.model';
 
 // GET /api/gigs/freelancer/[freelancerId] - Get all gigs by freelancer
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { freelancerId: string } }
 ) {
   try {
@@ -26,10 +26,8 @@ export async function GET(
       path: 'freelancerId',
       select: 'name',
       model: 'User'
-    });
-
-    // Transform gigs to match frontend expectations
-    const transformedGigs = gigs.map(gig => ({
+    });    // Transform gigs to match frontend expectations
+    const transformedGigs = gigs.map((gig: any) => ({
       ...gig.toObject(),
       id: gig._id,
       freelancer: gig.freelancerId, // Map freelancerId to freelancer

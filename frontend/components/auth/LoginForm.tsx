@@ -6,7 +6,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useToast } from "../ui/use-toast";
-import Link from "next/link";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");

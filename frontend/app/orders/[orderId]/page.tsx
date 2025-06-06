@@ -433,12 +433,13 @@ export default function OrderPage() {
       return
     }
     setIsCancelling(true)
-    try {      console.log("Attempting to request cancellation for order ID:", orderId);
+    try {
+      console.log("Attempting to request cancellation for order ID:", orderId);
       await orderService.orderService.requestCancellation(orderId as string, reason)
       toast({
         title: "Success",
         description: "Cancellation requested, waiting for approval from the " + 
-          (isSameId(user?.id, order.clientId) ? "freelancer" : "client")
+          (isSameId(user?.id, order?.clientId) ? "freelancer" : "client")
       })
       setShowCancellationDialog(false)
       setReason("")

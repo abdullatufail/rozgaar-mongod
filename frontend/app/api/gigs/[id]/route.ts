@@ -5,7 +5,7 @@ import { requireAuth } from '@/lib/auth-utils';
 
 // GET /api/gigs/[id] - Get single gig by ID
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {  try {
     await dbConnect();

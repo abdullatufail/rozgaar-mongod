@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../../contexts/auth-context";
-import { Gig, getGig, updateGig } from "../../../../services/gigs";
+import { getGig, updateGig } from "../../../../services/gigs";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
@@ -15,11 +15,9 @@ import { Navbar } from "../../../../components/common/Navbar";
 import { PageTransition, FadeIn } from "../../../../components/animations";
 import Image from "next/image";
 
-export default function EditGigPage({ params }: { params: { id: string } }) {
-  const router = useRouter();
+export default function EditGigPage({ params }: { params: { id: string } }) {  const router = useRouter();
   const { user, loading: userLoading } = useAuth();
   const { toast } = useToast();
-  const [gig, setGig] = useState<Gig | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -55,11 +53,9 @@ export default function EditGigPage({ params }: { params: { id: string } }) {
           description: "You do not have permission to edit this gig",
           variant: "destructive",
         });
-        router.push("/freelancerGigs");
-        return;
+        router.push("/freelancerGigs");        return;
       }
 
-      setGig(gigData);
       setTitle(gigData.title);
       setDescription(gigData.description);
       setPrice(gigData.price.toString());

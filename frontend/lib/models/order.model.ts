@@ -23,19 +23,18 @@ export interface IOrder extends Document {
   review?: any;
 }
 
-const orderSchema = new Schema<IOrder>({
-  gigId: {
-    type: mongoose.Schema.Types.ObjectId,
+const orderSchema = new Schema<IOrder>({  gigId: {
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'Gig',
     required: true
   },
   clientId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'User',
     required: true
   },
   freelancerId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'User',
     required: true
   },
@@ -79,9 +78,8 @@ const orderSchema = new Schema<IOrder>({
   cancellationApproved: {
     type: Boolean,
     default: false
-  },
-  cancellationRequestedBy: {
-    type: mongoose.Schema.Types.ObjectId,
+  },  cancellationRequestedBy: {
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'User'
   }
 }, {

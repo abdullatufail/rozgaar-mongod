@@ -9,6 +9,10 @@ export const PRICE_RANGES = [
   { label: "$500+", min: 500, max: 1000 }
 ];
 
+export const sampleGigs = [
+  
+];
+
 export const features = [
   {
     title: "No Cost to Join",

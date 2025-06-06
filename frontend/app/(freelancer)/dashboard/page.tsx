@@ -5,14 +5,13 @@ import { useAuth } from "../../../contexts/auth-context";
 import { redirect } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import Link from "next/link";
-import { Plus, DollarSign, Star, Package, RefreshCw } from "lucide-react";
+import { Plus, DollarSign, Star, Package } from "lucide-react";
 import { orderService } from "../../../services/orders";
 import { useToast } from "../../../components/ui/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { FadeIn, SlideIn } from "../../../components/animations";
 import { AddBalanceModal } from "../../../components/dashboard/AddBalanceModal";
-import { reviewService } from "../../../services/reviews";
 
 interface Review {
   id: string;

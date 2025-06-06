@@ -4,7 +4,7 @@ import Order from '@/lib/models/order.model';
 import Review from '@/lib/models/review.model';
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: { freelancerId: string } }
 ) {
   try {
@@ -19,16 +19,14 @@ export async function GET(
       freelancerId, 
       status: 'completed' 
     });
-    
-    console.log('Found completed orders:', orders.length);
-    console.log('Orders:', orders.map(o => ({ id: o._id, status: o.status })));
-    
+      console.log('Found completed orders:', orders.length);
+    console.log('Orders:', orders.map((o: any) => ({ id: o._id, status: o.status })));
+
     if (orders.length === 0) {
       console.log('No completed orders found, returning empty array');
-      return NextResponse.json([]);
-    }
-    
-    const orderIds = orders.map(order => order._id);
+      return NextResponse.json([]);    }
+
+    const orderIds = orders.map((order: any) => order._id);
     console.log('Order IDs for review lookup:', orderIds);
     
     // Get reviews for these orders
@@ -44,9 +42,8 @@ export async function GET(
         ]
       }
     ]);
-    
-    console.log('Found reviews:', reviews.length);
-    console.log('Reviews data:', reviews.map(r => ({ 
+      console.log('Found reviews:', reviews.length);
+    console.log('Reviews data:', reviews.map((r: any) => ({ 
       id: r._id, 
       rating: r.rating, 
       orderId: r.orderId,
@@ -54,7 +51,7 @@ export async function GET(
     })));
     
     // Transform the response to match frontend expectations
-    const transformedReviews = reviews.map(review => ({
+    const transformedReviews = reviews.map((review: any) => ({
       ...review.toObject(),
       id: review._id,
       order: review.orderId ? {

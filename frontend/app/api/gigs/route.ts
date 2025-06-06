@@ -57,9 +57,8 @@ export async function GET(request: NextRequest) {
         select: 'name',
         model: 'User'
       });
-    
-    // Transform gigs to match frontend expectations
-    const transformedGigs = gigs.map(gig => ({
+      // Transform gigs to match frontend expectations
+    const transformedGigs = gigs.map((gig: any) => ({
       ...gig.toObject(),
       id: gig._id,
       freelancer: gig.freelancerId, // Map freelancerId to freelancer

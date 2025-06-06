@@ -55,9 +55,8 @@ const gigSchema = new Schema<IGig>({
     required: true,
     min: 1,
     default: 7
-  },
-  freelancerId: {
-    type: mongoose.Schema.Types.ObjectId,
+  },  freelancerId: {
+    type: mongoose.Schema.Types.ObjectId as any,
     ref: 'User',
     required: true
   },

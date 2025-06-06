@@ -13,7 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu"
-import { useAuth } from "../../../contexts/auth-context"
 import { GigCard } from "@/components/common/GigCard"
 import type { Gig } from "@/services/gigs"
 import Footer from "@/components/common/Footer"
@@ -35,10 +34,8 @@ const PRICE_RANGES = [
   { label: "$500+", min: 501, max: 1000 },
 ]
 
-export default function GigsSearch() {
-  const searchParams = useSearchParams()
+export default function GigsSearch() {  const searchParams = useSearchParams()
   const router = useRouter()
-  const { user } = useAuth()
   const initialQuery = searchParams.get("search") || ""
   const initialCategory = searchParams.get("category") || ""
   const initialMinPrice = searchParams.get("minPrice") || "0"
@@ -50,10 +47,8 @@ export default function GigsSearch() {
     PRICE_RANGES.findIndex((range) => range.min === Number(initialMinPrice) && range.max === Number(initialMaxPrice)) ||
       0,
   )
-
   const [gigs, setGigs] = useState<Gig[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { logout } = useAuth()
 
   useEffect(() => {
     fetchGigs()
@@ -100,13 +95,7 @@ export default function GigsSearch() {
       console.error("Error fetching gigs:", error)
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    updateSearchParams()
-  }
+    }  }
 
   const updateSearchParams = () => {
     // Create a new URLSearchParams object
@@ -282,9 +271,8 @@ export default function GigsSearch() {
             staggerDelay={0.1}
             containerDelay={0.2}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            <AnimatePresence>
-              {gigs.map((gig, index) => (
+          >            <AnimatePresence>
+              {gigs.map((gig, _index) => (
                 <StaggeredChild key={gig.id}>
                   <motion.div
                     whileHover={{ y: -10, scale: 1.02 }}

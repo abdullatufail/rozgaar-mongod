@@ -14,9 +14,8 @@ export async function verifyToken(token: string): Promise<IUser | null> {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
-    
-    await dbConnect();
-    const user = await User.findById(decoded.id);
+      await dbConnect();
+    const user = await (User as any).findById(decoded.id);
     
     return user;
   } catch (error) {

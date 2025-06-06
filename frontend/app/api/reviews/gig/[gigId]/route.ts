@@ -4,7 +4,7 @@ import Order from '@/lib/models/order.model';
 import Review from '@/lib/models/review.model';
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: { gigId: string } }
 ) {
   try {
@@ -22,10 +22,9 @@ export async function GET(
     
     if (!orders || orders.length === 0) {
       console.log('No completed orders found, returning empty array');
-      return NextResponse.json([]);
-    }
-    
-    const orderIds = orders.map(order => order._id);
+      return NextResponse.json([]);    }
+
+    const orderIds = orders.map((order: any) => order._id);
     console.log('Order IDs:', orderIds);
     
     // Get reviews for these orders
@@ -40,11 +39,10 @@ export async function GET(
         select: 'name'
       }
     });
-    
-    console.log(`Found ${reviews?.length || 0} reviews`);
+      console.log(`Found ${reviews?.length || 0} reviews`);
     
     // Format the reviews for the frontend
-    const formattedReviews = reviews.map(review => {
+    const formattedReviews = reviews.map((review: any) => {
       console.log('Processing review:', review._id);
       return {
         id: review._id,
