@@ -50,8 +50,7 @@ export const authService = {
   async getCurrentUser(): Promise<User> {
     return api.get<User>("/auth/me");
   },
-
   async addBalance(amount: number): Promise<User> {
-    return api.post<User, { amount: number }>("/auth/add-balance", { amount });
+    return api.post<User, { amount: number }>("/auth/balance", { amount });
   },
 }; 

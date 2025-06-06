@@ -11,12 +11,6 @@ export interface Review {
   };
 }
 
-// Define interfaces for the request data types
-interface CreateReviewData {
-  orderId: string;
-  rating: number;
-  comment?: string;
-}
 
 // Empty object type for requests with no body
 type EmptyObject = Record<string, never>;
@@ -38,10 +32,9 @@ export const reviewService = {
       throw error;
     }
   },
-  
-  async getGigReviews(gigId: string): Promise<Review[]> {
+    async getGigReviews(gigId: string): Promise<Review[]> {
     try {
-      return await api.get<Review[]>(`/orders/gig/${gigId}/reviews`);
+      return await api.get<Review[]>(`/reviews/gig/${gigId}`);
     } catch (error) {
       console.error("Error fetching gig reviews:", error);
       throw error;

@@ -1,20 +1,33 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { authService } from "../../../../services/auth";
+import { NextRequest } from 'next/server';
+import { requireAuth } from '@/lib/auth-utils';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const token = cookies().get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const userOrResponse = await requireAuth(request);
+    
+    if (userOrResponse instanceof Response) {
+      return userOrResponse;
     }
-
-    const user = await authService.getCurrentUser();
-    return NextResponse.json(user);
+    
+    const user = userOrResponse;
+    
+    return new Response(
+      JSON.stringify({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        balance: user.balance,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch user" },
-      { status: 500 }
+    console.error('Get current user error:', error);
+    return new Response(
+      JSON.stringify({ message: 'Server error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-} 
+}

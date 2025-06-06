@@ -316,9 +316,8 @@ export default function GigPage({ params }: { params: { id: string } }) {
                     className="mt-1 text-muted-foreground"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
-                    by {gig.freelancer.name}
+                    transition={{ duration: 0.5, delay: 0.3 }}                  >
+                    by {gig.freelancer?.name || 'Unknown Freelancer'}
                   </motion.p>
                   {gig.rating !== undefined && (
                     <motion.div

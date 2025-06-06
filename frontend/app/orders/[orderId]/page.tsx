@@ -433,12 +433,12 @@ export default function OrderPage() {
       return
     }
     setIsCancelling(true)
-    try {
-      console.log("Attempting to request cancellation for order ID:", orderId);
+    try {      console.log("Attempting to request cancellation for order ID:", orderId);
       await orderService.orderService.requestCancellation(orderId as string, reason)
       toast({
         title: "Success",
-        description: "Cancellation requested",
+        description: "Cancellation requested, waiting for approval from the " + 
+          (isSameId(user?.id, order.clientId) ? "freelancer" : "client")
       })
       setShowCancellationDialog(false)
       setReason("")
@@ -1332,11 +1332,9 @@ export default function OrderPage() {
                         </motion.div>
                       </MagneticButton>
                     </motion.div>
-                  )}
-
-                  {user &&
-                    ((isSameId(user.id, order.clientId) && order.status === "in_progress") ||
-                      (isSameId(user.id, order.clientId) && order.isLate && order.status === "late")) && (
+                  )}                  {user &&
+                    (((isSameId(user.id, order.clientId) || isSameId(user.id, order.freelancerId)) && order.status === "in_progress") ||
+                     ((isSameId(user.id, order.clientId) || isSameId(user.id, order.freelancerId)) && order.isLate && order.status === "late")) && (
                       <Dialog open={showCancellationDialog} onOpenChange={setShowCancellationDialog}>
                         <DialogTrigger asChild>
                           <MagneticButton strength={20}>

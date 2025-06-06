@@ -49,12 +49,17 @@ export default function DashboardPage() {
       }
     }
   }, [user]);
-
   const fetchOrders = async () => {
     try {
       setOrdersLoading(true);
       const fetchedOrders = await orderService.fetchOrders();
       console.log("Fetched orders:", fetchedOrders);
+      console.log("First order structure:", fetchedOrders?.[0]);
+      if (fetchedOrders?.[0]) {
+        console.log("First order gig:", fetchedOrders[0].gig);
+        console.log("First order client:", fetchedOrders[0].client);
+        console.log("First order freelancer:", fetchedOrders[0].freelancer);
+      }
       setOrders(fetchedOrders);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -68,21 +73,19 @@ export default function DashboardPage() {
       setOrdersLoading(false);
     }
   };
-
   const fetchReviews = async () => {
     if (!user) return;
     
     try {
       setReviewsLoading(true);
       const fetchedReviews = await orderService.getFreelancerReviews(user.id);
-      setReviews(fetchedReviews);
+      console.log("Fetched reviews:", fetchedReviews);
+      setReviews(fetchedReviews || []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch reviews",
-        variant: "destructive",
-      });
+      // Don't show error toast for reviews - it's not critical
+      // Just set empty array and continue
+      setReviews([]);
     } finally {
       setReviewsLoading(false);
     }
@@ -272,11 +275,10 @@ export default function DashboardPage() {
               {orders.slice(0, 3).map((order, index) => (
                 <SlideIn key={order.id} direction="up" delay={0.6 + index * 0.1}>
                   <Link href={`/orders/${order.id}`}>
-                    <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{order.gig.title}</CardTitle>
+                    <Card className="cursor-pointer hover:shadow-md transition-shadow">                      <CardHeader>
+                        <CardTitle className="text-lg">{order.gig?.title || 'Unknown Gig'}</CardTitle>
                         <CardDescription>
-                          {user.role === "freelancer" ? `Client: ${order.client.name}` : `Freelancer: ${order.freelancer.name}`}
+                          {user.role === "freelancer" ? `Client: ${order.client?.name || 'Unknown Client'}` : `Freelancer: ${order.freelancer?.name || 'Unknown Freelancer'}`}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>

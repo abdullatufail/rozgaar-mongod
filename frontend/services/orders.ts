@@ -43,18 +43,6 @@ export interface Order {
   };
 }
 
-export interface Message {
-  id: string;
-  orderId: string;
-  senderId: string;
-  content: string;
-  createdAt: string;
-  isRead: boolean;
-  sender?: {
-    name: string;
-  };
-}
-
 export interface Balance {
   amount: number;
 }
@@ -111,9 +99,7 @@ export const orderService = {
     const token = getToken();
     if (!token) {
       throw new Error("No token found");
-    }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/deliver`, {
+    }    const response = await fetch(`/api/orders/${orderId}/deliver`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -147,31 +133,18 @@ export const orderService = {
   rejectCancellation: async (orderId: string) => {
     return api.post<Order, EmptyObject>(`/orders/${orderId}/reject-cancellation`, {});
   },
-
   addReview: async (orderId: string, rating: number, comment?: string) => {
     return api.post<Review, { rating: number; comment?: string }>(`/orders/${orderId}/review`, { rating, comment });
-  },
-
-  addMessage: async (orderId: string, content: string): Promise<Message> => {
-    return api.post<Message, { content: string }>(`/orders/${orderId}/messages`, {
-      content,
-    });
-  },
-
-  getOrderMessages: async (orderId: string): Promise<Message[]> => {
-    return api.get<Message[]>(`/orders/${orderId}/messages`);
   },
 
   getBalance: async (): Promise<Balance> => {
     return api.get<Balance>("/balance");
   },
-
   addBalance: async (amount: number): Promise<any> => {
-    return api.post<any, { amount: number }>("/auth/add-balance", { amount });
+    return api.post<any, { amount: number }>("/auth/balance", { amount });
   },
-  
-  getFreelancerReviews: async (freelancerId: string): Promise<Review[]> => {
-    return api.get<Review[]>(`/orders/freelancer/${freelancerId}/reviews`);
+    getFreelancerReviews: async (freelancerId: string): Promise<Review[]> => {
+    return api.get<Review[]>(`/reviews/freelancer/${freelancerId}`);
   },
 
   updateOrderStatus: async (orderId: string, status: "pending" | "in_progress" | "completed" | "cancelled") => {
