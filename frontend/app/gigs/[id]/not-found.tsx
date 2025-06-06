@@ -7,10 +7,9 @@ export default function NotFound() {
       <h1 className="mb-4 text-4xl font-bold">Gig Not Found</h1>
       <p className="mb-8 text-lg text-muted-foreground">
         The gig you&apos;re looking for doesn&apos;t exist or has been removed.
-      </p>
-      <Button asChild>
-        <Link href="/">Back to Home</Link>
-      </Button>
+      </p>      <Link href="/">
+        <Button>Back to Home</Button>
+      </Link>
     </div>
   );
 } 

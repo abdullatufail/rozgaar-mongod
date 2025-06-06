@@ -64,12 +64,19 @@ export async function GET(
     }));
     
     console.log('Transformed reviews:', transformedReviews.length);
-    return NextResponse.json(transformedReviews);
-  } catch (error) {
+    return NextResponse.json(transformedReviews);  } catch (error) {
     console.error('Get freelancer reviews error:', error);
-    console.error('Error stack:', error.stack);
+    
+    // Properly handle the unknown error type
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    if (errorStack) {
+      console.error('Error stack:', errorStack);
+    }
+    
     return NextResponse.json(
-      { message: 'Server error', error: error.message },
+      { message: 'Server error', error: errorMessage },
       { status: 500 }
     );
   }
